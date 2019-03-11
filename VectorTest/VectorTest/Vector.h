@@ -17,7 +17,9 @@ public:
 
 	void PushBack(const T & object);
 	void PushBack(const Vector & other);
+
 	void PushFront(const T & object);
+	void PushFront(const Vector & other);
 
 	T Pop();
 	T Dequeue();
@@ -25,8 +27,8 @@ public:
 	T & Front();
 	T * Data();
 
-	uint Size();
-	bool IsEmpty();
+	uint Size() const;
+	bool IsEmpty() const;
 
 	void SetIncrementialSize(uint incrementialSize);
 	void ShrinkToFit();
@@ -116,13 +118,14 @@ template<class T>
 inline void Vector<T>::PushBack(const Vector & other)
 {
 	uint delta = m_maxSize - m_end;
-	if (delta < other.m_end)
+	uint oSize = other.Size();
+	if (delta < oSize)
 	{
-		_expand((other.m_end - delta) + m_incrementialSize);
+		_expand((oSize - delta) + m_incrementialSize);
 		m_incrementialSize *= 2;
 	}
 
-	memcpy((char*)m_data + m_end * m_sizeOfObject, other.m_data, other.m_end * other.m_sizeOfObject);
+	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, other.m_end * other.m_sizeOfObject);
 
 	m_end += other.m_end;
 }
@@ -137,6 +140,20 @@ inline void Vector<T>::PushFront(const T & object)
 	}
 
 	memcpy((char*)m_data + --m_start * m_sizeOfObject, &object, m_sizeOfObject);
+}
+
+template<class T>
+inline void Vector<T>::PushFront(const Vector & other)
+{
+	uint oSize = other.Size();
+	if (m_start < oSize)
+	{
+		_expandFront((oSize - m_start) + m_incrementialSize);
+		m_incrementialSize *= 2;
+	}
+
+	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, other.m_end * other.m_sizeOfObject);
+	m_start -= oSize;
 }
 
 template<class T>
@@ -178,13 +195,13 @@ inline T * Vector<T>::Data()
 }
 
 template<class T>
-inline uint Vector<T>::Size()
+inline uint Vector<T>::Size() const
 {
 	return m_end - m_start;
 }
 
 template<class T>
-inline bool Vector<T>::IsEmpty()
+inline bool Vector<T>::IsEmpty() const
 {
 	return !(m_end - m_start);
 }

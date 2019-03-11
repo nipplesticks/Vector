@@ -9,24 +9,31 @@
 int main()
 {
 	Vector<int> myVec;
+	Vector<int> myVec2;
+	Vector<int> myVec3;
 
 	int counter = 0;
 
-	for (int i = 0; i < 10; i++)
-		myVec.PushBack(counter++);
+	for (int i = 0; i < 15; i++)
+		myVec.PushBack(1);
 
-	counter = 0;
+	for (int i = 0; i < 15; i++)
+		myVec2.PushBack(counter++);
 
-	for (int i = 0; i < 10; i++)
-		myVec.PushFront(counter--);
+	for (int i = 0; i < 15; i++)
+		myVec3.PushBack(-1);
 
-	myVec.ShrinkToFit();
+	myVec2.PushBack(myVec);
 
-	int lol = myVec.Size();
+	myVec3.PushFront(myVec2);
 
-	for (int i = 0; i < myVec.Size(); i++)
-		std::cout << myVec[i] << ", ";
+	for (int i = 0; i < myVec3.Size(); i++)
+	{
+		if (i != 0 && i % 10 == 0)
+			std::cout << std::endl;
 
+		std::cout << myVec3[i] << "\t";
+	}
 
 	std::cout << std::endl;
 	system("PAUSE");
