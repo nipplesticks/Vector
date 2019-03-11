@@ -20,6 +20,10 @@ int main()
 	for (int i = 0; i < 10; i++)
 		myVec.PushFront(counter--);
 
+	myVec.ShrinkToFit();
+
+	int lol = myVec.Size();
+
 	for (int i = 0; i < myVec.Size(); i++)
 		std::cout << myVec[i] << ", ";
 

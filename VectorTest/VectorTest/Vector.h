@@ -198,8 +198,9 @@ inline void Vector<T>::SetIncrementialSize(uint incrementialSize)
 template<class T>
 inline void Vector<T>::ShrinkToFit()
 {
-	memcpy((char*)m_data, (char*)m_data + m_start * m_sizeOfObject, (m_end - m_start) * m_sizeOfObject);
-	m_data = realloc((char*)m_data, (m_end - m_start) * m_sizeOfObject);
+	memcpy((char*)m_data, (char*)m_data + m_start * m_sizeOfObject, m_end * m_sizeOfObject);
+	m_data = realloc((char*)m_data, m_end * m_sizeOfObject);
+	m_end -= m_start;
 	m_start = 0;
 }
 
