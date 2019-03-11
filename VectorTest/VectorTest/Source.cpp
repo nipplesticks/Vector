@@ -8,39 +8,23 @@
 
 int main()
 {
-	const uint LOOP_COUNT = 10000;
-	const uint PUSHES = 100;
-
 	Vector<int> myVec;
-	std::vector<int> stdVec;
 
-	Timer t, t1;
+	int counter = 0;
 
-	double time = 0.0;
+	for (int i = 0; i < 10; i++)
+		myVec.PushBack(counter++);
 
-	std::cout << "Time to push " << PUSHES << " objects\n";
+	counter = 0;
 
-	
-	t.Start();
-	for (int s = 0; s < LOOP_COUNT; s++)
-	{
-		for (uint i = 0; i < PUSHES; i++)
-			myVec.Push(rand());
-		time += t.Stop(Timer::MILLISECONDS);
-	}
-	std::cout << "My vector:\t" << time / LOOP_COUNT << " ms" << std::endl;
+	for (int i = 0; i < 10; i++)
+		myVec.PushFront(counter--);
 
-	time = 0.0;
+	for (int i = 0; i < myVec.Size(); i++)
+		std::cout << myVec[i] << ", ";
 
-	t1.Start();
-	for (int s = 0; s < LOOP_COUNT; s++)
-	{
-		for (uint i = 0; i < PUSHES; i++)
-			stdVec.push_back(rand());
-		time += t1.Stop(Timer::MILLISECONDS);
-	}
-	std::cout << "std vector:\t" << time / LOOP_COUNT << " ms" << std::endl;
-	
+
+	std::cout << std::endl;
 	system("PAUSE");
 	return 0;
 }
