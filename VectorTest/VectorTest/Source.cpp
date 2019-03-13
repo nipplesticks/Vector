@@ -58,7 +58,7 @@ int main()
 	PrintVector(vec2);
 
 	std::cout << "\nVec3.PushFront(vec2):\n";
-	vec3.PushFront(vec2);
+	vec3.PushFront(vec2, 0, 15);
 
 	PrintVector(vec3);
 	

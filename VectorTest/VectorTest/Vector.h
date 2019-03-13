@@ -21,6 +21,10 @@ public:
 
 	void PushFront(const T & object);
 	void PushFront(const Vector & other);
+	void PushFront(const Vector & other, uint start, uint end);
+
+	void Insert(const T & object, uint at);
+
 
 	T Pop();
 	T Dequeue();
@@ -131,6 +135,22 @@ inline void Vector<T>::PushBack(const Vector & other)
 }
 
 template<class T>
+inline void Vector<T>::PushBack(const Vector & other, uint start, uint end)
+{
+	uint delta = m_maxSize - m_end;
+	uint oSize = end - start;
+	if (delta < oSize)
+	{
+		_expand((oSize - delta) + m_incrementialSize);
+		m_incrementialSize *= 2;
+	}
+
+	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + (other.m_start + start) * other.m_sizeOfObject, oSize * other.m_sizeOfObject);
+
+	m_end += other.m_end;
+}
+
+template<class T>
 inline void Vector<T>::PushFront(const T & object)
 {
 	if (!m_start)
@@ -154,6 +174,43 @@ inline void Vector<T>::PushFront(const Vector & other)
 
 	memcpy((char*)m_data + (m_start - oSize) * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, oSize * other.m_sizeOfObject);
 	m_start -= oSize;
+}
+
+template<class T>
+inline void Vector<T>::PushFront(const Vector & other, uint start, uint end)
+{
+	uint oSize = end - start;
+	if (m_start < oSize)
+	{
+		_expandFront((oSize - m_start) + m_incrementialSize);
+		m_incrementialSize *= 2;
+	}
+
+	memcpy((char*)m_data + (m_start - oSize) * m_sizeOfObject, (char*)other.m_data + (other.m_start + start) * other.m_sizeOfObject, oSize * other.m_sizeOfObject);
+	m_start -= oSize;
+}
+
+template<class T>
+inline void Vector<T>::Insert(const T & object, uint at)
+{
+	uint div = (m_end - m_start) / 2;
+	if (at < div)
+	{
+		if (!m_start)
+		{
+			_expandFront(m_incrementialSize);
+			m_incrementialSize *= 2;	
+		}
+		// Move data
+		memcpy((char*)m_data + --m_start * m_sizeOfObject, (char*)m_data + (m_start + at) * m_sizeOfObject, (m_start + at) * m_sizeOfObject);
+
+		memcpy((char*) m_data + (m_start + at) * m_sizeOfObject, &object, m_sizeOfObject)
+	}
+	else
+	{
+
+	}
+
 }
 
 template<class T>
