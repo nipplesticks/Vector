@@ -17,6 +17,7 @@ public:
 
 	void PushBack(const T & object);
 	void PushBack(const Vector & other);
+	void PushBack(const Vector & other, uint start, uint end);
 
 	void PushFront(const T & object);
 	void PushFront(const Vector & other);
@@ -33,9 +34,8 @@ public:
 	void SetIncrementialSize(uint incrementialSize);
 	void ShrinkToFit();
 
-
-	T & operator[](uint i);
-	T & At(uint i);
+	T & operator[](uint i) const;
+	T & At(uint i) const;
 
 	Vector & operator=(const Vector & other);
 
@@ -125,7 +125,7 @@ inline void Vector<T>::PushBack(const Vector & other)
 		m_incrementialSize *= 2;
 	}
 
-	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, other.m_end * other.m_sizeOfObject);
+	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, oSize * other.m_sizeOfObject);
 
 	m_end += other.m_end;
 }
@@ -152,7 +152,7 @@ inline void Vector<T>::PushFront(const Vector & other)
 		m_incrementialSize *= 2;
 	}
 
-	memcpy((char*)m_data + m_end * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, other.m_end * other.m_sizeOfObject);
+	memcpy((char*)m_data + (m_start - oSize) * m_sizeOfObject, (char*)other.m_data + other.m_start * other.m_sizeOfObject, oSize * other.m_sizeOfObject);
 	m_start -= oSize;
 }
 
@@ -222,13 +222,13 @@ inline void Vector<T>::ShrinkToFit()
 }
 
 template<class T>
-inline T & Vector<T>::operator[](uint i)
+inline T & Vector<T>::operator[](uint i) const
 {
 	return *(T*)((char*)m_data + (m_start + i) * m_sizeOfObject);
 }
 
 template<class T>
-inline T & Vector<T>::At(uint i)
+inline T & Vector<T>::At(uint i) const
 {
 	return *(T*)((char*)m_data + (m_start + i) * m_sizeOfObject);
 }
@@ -257,7 +257,7 @@ inline void Vector<T>::_expandFront(uint increment)
 {
 	m_maxSize += increment;
 	m_data = realloc(m_data, m_maxSize * m_sizeOfObject);
-	memcpy((char*)m_data + increment * m_sizeOfObject, m_data, m_end * m_sizeOfObject);
+	memcpy((char*)m_data + increment * m_sizeOfObject, (char*)m_data + m_start * m_sizeOfObject, (m_end - m_start) * m_sizeOfObject);
 	m_start = increment;
 	m_end += m_start;
 }
